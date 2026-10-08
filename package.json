@@ -1,22 +1,52 @@
 {
-  "name": "gigen",
+  "name": "@sayantand938/gigen",
   "version": "1.0.0",
-  "description": "CLI tool to generate .gitignore from github/gitignore",
-  "main": "index.js",
+  "description": "Fast, non-interactive .gitignore generator backed by the github/gitignore template collection.",
   "type": "module",
   "bin": {
     "gigen": "./bin/cli.js"
   },
+  "exports": {
+    ".": "./src/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "start": "node ./bin/cli.js"
+    "start": "node ./bin/cli.js",
+    "test": "node --test",
+    "prepublishOnly": "npm test"
   },
   "keywords": [
     "gitignore",
+    "gitignore-generator",
+    "gitignore-template",
     "cli",
-    "generator"
+    "generator",
+    "github-gitignore",
+    "scaffold",
+    "boilerplate"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Sayantan Das",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SayantanD938/gigen.git"
+  },
+  "homepage": "https://github.com/SayantanD938/gigen#readme",
+  "bugs": {
+    "url": "https://github.com/SayantanD938/gigen/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "boxen": "^9.0.0",
     "commander": "^13.1.0",

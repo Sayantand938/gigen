@@ -1,36 +1,41 @@
-// src/config.js
-
 /**
- * GitHub API & Raw content URLs
+ * Static configuration for gigen.
+ *
+ * This module is data only: no I/O, no side effects. Anything that decides how
+ * the tool behaves at runtime lives in the sibling modules.
  */
+
+/** Command name used in help text and error hints. */
+export const PACKAGE_NAME = 'gigen';
+
+/** Default file that generated rules are written to. */
+export const DEFAULT_OUTPUT_FILE = '.gitignore';
+
+/** Where the upstream template collection lives. */
 export const GITHUB_CONFIG = {
+    /** Recursive tree listing of github/gitignore, used to discover templates. */
     treeApiUrl: 'https://api.github.com/repos/github/gitignore/git/trees/main?recursive=1',
+    /** Raw file host, used to download template bodies. */
     rawBaseUrl: 'https://raw.githubusercontent.com/github/gitignore/main',
     headers: {
-        'User-Agent': 'gitignore-gen-cli',
+        'User-Agent': 'gigen-cli',
     },
 };
 
-/**
- * Local cache settings
- */
+/** Local cache used to avoid hammering the GitHub API. */
 export const CACHE_CONFIG = {
-    projectName: 'gitignore-gen',
+    projectName: 'gigen',
     key: 'templates_cache',
-    ttl: 1000 * 60 * 60 * 24, // 24 hours in milliseconds
+    ttl: 1000 * 60 * 60 * 24, // 24 hours
 };
 
-/**
- * Fuzzy search options (Fuse.js)
- */
+/** Fuse.js tuning for matching a user supplied name to a template. */
 export const FUZZY_SEARCH_OPTIONS = {
     keys: ['name', 'path'],
-    threshold: 0.35, // Lower = stricter, Higher = looser match
+    threshold: 0.35, // lower is stricter, higher is looser
 };
 
-/**
- * Fallback templates used if offline or rate-limited by GitHub
- */
+/** Used when GitHub is unreachable or rate limiting us. */
 export const FALLBACK_TEMPLATES = [
     { name: 'Node', path: 'Node.gitignore' },
     { name: 'Python', path: 'Python.gitignore' },
@@ -46,92 +51,9 @@ export const FALLBACK_TEMPLATES = [
     { name: 'Linux', path: 'Global/Linux.gitignore' },
 ];
 
-/**
- * Rules to automatically detect stacks, frameworks, tools, and editors.
- * Simply add a new object here to support more technologies!
- */
-export const DETECTION_RULES = [
-    // --- Frameworks ---
-    {
-        name: 'Nextjs',
-        match: (files) => files.some((f) => /^next\.config\.(js|mjs|ts)$/.test(f)),
-    },
-    {
-        name: 'Nestjs',
-        match: (files) => files.includes('nest-cli.json'),
-    },
-    {
-        name: 'Flutter',
-        match: (files) => files.includes('pubspec.yaml') && files.includes('android'),
-    },
-    {
-        name: 'Dart',
-        match: (files) => files.includes('pubspec.yaml'),
-    },
-    {
-        name: 'Godot',
-        match: (files) => files.includes('project.godot'),
-    },
-    {
-        name: 'Unity',
-        match: (files) => files.includes('ProjectSettings') && files.includes('Assets'),
-    },
-
-    // --- Languages & Package Managers ---
-    {
-        name: 'Node',
-        match: (files) =>
-            files.some((f) =>
-                ['package.json', 'pnpm-lock.yaml', 'package-lock.json', 'yarn.lock', 'bun.lockb'].includes(f)
-            ),
-    },
-    {
-        name: 'Python',
-        match: (files) =>
-            files.some((f) =>
-                [
-                    'requirements.txt',
-                    'pyproject.toml',
-                    'Pipfile',
-                    'setup.py',
-                    'environment.yml',
-                    'poetry.lock',
-                    'uv.lock',
-                ].includes(f)
-            ),
-    },
-    {
-        name: 'Rust',
-        match: (files) => files.includes('Cargo.toml'),
-    },
-    {
-        name: 'Go',
-        match: (files) => files.includes('go.mod'),
-    },
-    {
-        name: 'Java',
-        match: (files) =>
-            files.some((f) =>
-                ['pom.xml', 'build.gradle', 'build.gradle.kts', 'mvnw', 'gradlew'].includes(f)
-            ),
-    },
-    {
-        name: 'C++',
-        match: (files) =>
-            files.some((f) => ['CMakeLists.txt', 'Makefile', 'conanfile.txt'].includes(f) || f.endsWith('.cpp')),
-    },
-    {
-        name: 'Terraform',
-        match: (files) => files.some((f) => f.endsWith('.tf') || f.endsWith('.tfvars')),
-    },
-
-    // --- Editors & IDEs ---
-    {
-        name: 'VisualStudioCode',
-        match: (files) => files.includes('.vscode'),
-    },
-    {
-        name: 'JetBrains',
-        match: (files) => files.includes('.idea'),
-    },
-];
+/** Maps a Node platform to the matching github/gitignore template. */
+export const OS_TEMPLATE_MAP = {
+    darwin: 'macos',
+    win32: 'windows',
+    linux: 'linux',
+};

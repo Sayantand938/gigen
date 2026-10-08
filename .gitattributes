@@ -1,0 +1,15 @@
+# Normalise line endings on checkout so the published CLI always ships LF.
+* text=auto eol=lf
+
+# Keep the shebang in bin/cli.js intact and executable-adjacent.
+bin/cli.js text eol=lf
+
+# Windows helper scripts must keep CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary assets are never normalised.
+*.tgz binary
+*.png binary
+*.jpg binary
+*.ico binary
